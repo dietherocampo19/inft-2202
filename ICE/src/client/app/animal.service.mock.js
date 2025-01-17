@@ -1,11 +1,10 @@
 /*
     Name: Diether Ocampo
-    filename: animal.service.js
+    filename: animal.service.mock.js
     Course: INFT 2202
     Date: January 10 2025
     Description: 
 */
-
 /*
  *  Service constructor
  */
@@ -29,14 +28,13 @@ AnimalService.prototype.getAnimals = function() {
  */
 AnimalService.prototype.saveAnimal = function(animal) {
     // get a list of animals
-    //const animals = this.getAnimals();
+    const animals = this.getAnimals();
     // see if this animal already exists
-    //if (animals.find(a => a.name == animal.name)) {
+    if (animals.find(a => a.name == animal.name)) {
         // tell the caller we're not going to save this
-        //throw new Error('An animal with that name already exists!');
-    //}
+        throw new Error('An animal with that name already exists!');
+    }
     // if it doesn't, add it to the array
-    let animals = JSON.parse(localStorage.getItem('animals'));
     animals.push(animal);
     // and save it in storage again
     localStorage.setItem('animals', JSON.stringify(animals));
@@ -73,3 +71,4 @@ AnimalService.prototype.deleteAnimal = function(animal) {
 }
 
 const animalService = new AnimalService();
+
