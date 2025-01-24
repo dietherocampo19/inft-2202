@@ -17,8 +17,8 @@ function animal() {
         const mb3Name = document.createElement('div');
         mb3Name.classList.add('mb-3');
         mb3Name.innerHTML = '<label for="name" class="form-label">Animal Name</label>'
-                '<input type="text" class="form-control" id="name" name="name">'
-                '<p class="text-danger d-none">currently hidden</p>'
+        '<input type="text" class="form-control" id="name" name="name">'
+        '<p class="text-danger d-none">currently hidden</p>'
         container.append(mb3Name);
         const mb3Breed = document.createElement('div');
         mb3Breed.classList.add('mb-3');
@@ -41,9 +41,9 @@ function animal() {
         const mb3Sound = document.createElement('div');
         mb3Sound.classList.add('mb-3');
         mb3Sound.innerHTML ='<label for="sound" class="form-label">Sound this animal makes</label>'
-                '<input type="text" class="form-control" id="sound" name="sound">'
-                '<p class="text-danger d-none"></p>'
-        container.append(mb3Sound;)
+        '<input type="text" class="form-control" id="sound" name="sound">'
+        '<p class="text-danger d-none"></p>'
+        container.append(mb3Sound);
         
 
 
