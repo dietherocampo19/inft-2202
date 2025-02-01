@@ -1,57 +1,105 @@
-// import the movies array from the supplied data file.
-// write the array to the console, so you can see that they are loading properly
-/* call insertMoviesIntoTable, 
-    give it a reference to the table you want to populate,
-    and the list of movies you want to show in the table */
-// show the table
+import { movies } from "./movies.js";
 
-// get a list of `pinnedMovies` from local storage
-// log them out so you can see that you have working pins
-// if there are no pinned movies, put a message on the screen that says so
-// but if there are, hide the message
-/* call insertMoviesIntoTable, 
-    give it a reference to the table you want to populate,
-    and the list of movies you want to show in the table */
-// show the table
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("Loaded movies:", movies); // Debugging: Ensure movies load properly
 
+    const allMoviesTable = document.querySelector("#all-movies-container table");
+    const pinnedMoviesTable = document.querySelector("#pinned-movies-container table");
+    const allMoviesAlert = document.querySelector("#all-movies-container .alert");
+    const pinnedMoviesAlert = document.querySelector("#pinned-movies-container .alert");
 
+    let pinnedMovies = getPinnedMoviesFromStorage();
+    console.log("Loaded pinned movies:", pinnedMovies); // Debugging: Ensure pinned movies load properly
 
-/* 
- *  getPinnedMoviesFromStorage
- *  This should take no parameters, and return an array.
+    if (pinnedMovies.length === 0) {
+        pinnedMoviesAlert.classList.remove("d-none");
+        pinnedMoviesTable.classList.add("d-none");
+    } else {
+        pinnedMoviesAlert.classList.add("d-none");
+        pinnedMoviesTable.classList.remove("d-none");
+        insertMoviesIntoTable(pinnedMoviesTable, pinnedMovies);
+    }
+
+    insertMoviesIntoTable(allMoviesTable, movies.filter(movie => movie.genre !== "Drama"));
+});
+
+/**
+ * Retrieve pinned movies from local storage.
+ * @returns {Array} An array of pinned movies.
  */
 function getPinnedMoviesFromStorage() {
+    return JSON.parse(localStorage.getItem("pinnedMovies")) || [];
 }
 
-/*
- *  insertMoviesIntoTable
- *  This should take two parameters,
- *  - a reference to the table you want to populate
- *  - a list of movies to put in the table
- *  It should return nothing
+/**
+ * Inserts movies into the given table and applies sorting, styling, and pinning logic.
+ * @param {HTMLElement} eleTable - The table to populate.
+ * @param {Array} movies - The list of movies to insert.
  */
-function insertMoviesIntoTable(eleTable, movies) 
-{
-    // sort the list of movies by rating, highest to lowest
-    // for each movie
-        // insert a row
-        // insert a cell for each attribute of a movie
-        // the datetime is a "unix timestamp", measured in seconds.  
-        //   javascript dates are measured in milliseconds.
-        //   convert this timestamp to a javascript date and print out the date as a normal string in english
-        // create a new button element
-        // look in local storage to see if this item is already pinned
-        //   if it's already pinned, make it red, otherwise make it blue
-        // set the html so it shows a font-awesome icon
-        //   if it's already pinned, show an x, otherwise show a pencil
-        // add an event listener, when this button is clicked...
-            // if it is, remove it from the list
-            // it it's not, add it to the list 
-            // refresh the page
-        // create another table row and put the button in it
-        // if a movie is rated two or below, make this row red
-        // if this movie is rated higher than two but less than or equal to five, make this row orange
-        // if this movie is rated higher than five but less than or equal to 8, make this row blue
-        // if this movie is rated higher than eight, make this row green
-        // if this movie is a drama, don't add it to the list
+function insertMoviesIntoTable(eleTable, movies) {
+    const tbody = eleTable.querySelector("tbody");
+    tbody.innerHTML = ""; // Clear previous content
+
+    // Sort movies by rating (highest to lowest)
+    movies.sort((a, b) => b.rating - a.rating);
+
+    movies.forEach(movie => {
+        const row = document.createElement("tr");
+
+        // Apply row color based on rating
+        if (movie.rating <= 2) row.classList.add("table-danger"); // Red
+        else if (movie.rating <= 5) row.classList.add("table-warning"); // Orange
+        else if (movie.rating <= 8) row.classList.add("table-primary"); // Blue
+        else row.classList.add("table-success"); // Green
+
+        row.innerHTML = `
+            <td>${movie.title}</td>
+            <td>${movie.genre}</td>
+            <td>${new Date(movie.release_date * 1000).toLocaleDateString()}</td>
+            <td>${movie.director}</td>
+            <td>${movie.rating}</td>
+            <td><button class="btn ${isPinned(movie) ? "btn-danger" : "btn-primary"} pin-btn" data-title="${movie.title}">
+                <i class="fa ${isPinned(movie) ? "fa-times" : "fa-pencil"}"></i>
+            </button></td>
+        `;
+
+        tbody.appendChild(row);
+    });
+
+    // Add event listeners for pin buttons
+    tbody.querySelectorAll(".pin-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            togglePinMovie(button.getAttribute("data-title"));
+        });
+    });
+}
+
+/**
+ * Checks if a movie is already pinned.
+ * @param {Object} movie - The movie object to check.
+ * @returns {boolean} - True if the movie is pinned, false otherwise.
+ */
+function isPinned(movie) {
+    const pinnedMovies = getPinnedMoviesFromStorage();
+    return pinnedMovies.some(m => m.title === movie.title);
+}
+
+/**
+ * Toggles a movie's pin status.
+ * @param {string} title - The movie title to pin/unpin.
+ */
+function togglePinMovie(title) {
+    let pinnedMovies = getPinnedMoviesFromStorage();
+    const movie = movies.find(m => m.title === title);
+
+    if (!movie) return;
+
+    if (isPinned(movie)) {
+        pinnedMovies = pinnedMovies.filter(m => m.title !== title);
+    } else {
+        pinnedMovies.push(movie);
+    }
+
+    localStorage.setItem("pinnedMovies", JSON.stringify(pinnedMovies));
+    location.reload(); // Refresh page to update UI
 }
