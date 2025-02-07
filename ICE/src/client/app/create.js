@@ -6,61 +6,42 @@
     Description: Handles adding and editing animals.
 */
 
-// Tell us what page we're on
-console.log('we are on the add/edit page');
+// tell us what page we're on
+console.log('we are on the add page');
 
-// Get URL parameters to check if editing an animal
-const urlParams = new URLSearchParams(window.location.search);
-const animalId = urlParams.get('id'); // Get the animal ID if editing
-
+// assign a handler to the submit event
 document.getElementById('animal-form')
     .addEventListener('submit', submitAnimalForm);
 
-if (animalId) {
-    setupEditForm(animalId);
-}
-
-// Function to set up the form for editing
-async function setupEditForm(id) {
-    try {
-        const animal = await animalService.findAnimal(id);
-        if (animal) {
-            const animalForm = document.getElementById('animal-form');
-            animalForm.name.value = animal.name;
-            animalForm.eyes.value = animal.eyes;
-            animalForm.legs.value = animal.legs;
-            animalForm.type.value = animal.type;
-            document.getElementById('form-title').textContent = "Edit Animal";
-            animalForm.name.disabled = true; // Keep name field disabled for editing
-        }
-    } catch (error) {
-        console.log("Error fetching animal:", error);
-    }
-}
-
-// Handle form submission (create or update)
-async function submitAnimalForm(event) {
+// create a handler to deal with the submit event
+async function submitAnimalForm ( event ) {
+    // prevent the default action from happening
     event.preventDefault();
-    const animalForm = event.target;
+    // get a reference to the form (from the event)
+    const animalForm = event.target;  
+    // validate the form
     const valid = validateAnimalForm(animalForm);
-
+    // do stuff if the form is valid
     if (valid) {
-        console.log('Form is valid');
-
+        console.log('were good');
+        
         const formData = new FormData(animalForm);
+        //create a javascript object to hold the form data
         const animalObject = {};
         formData.forEach((value, key) => {
-            animalObject[key] = (key === 'eyes' || key === 'legs') ? Number(value) : value;
+            //by default, a value from form is string
+            //we need to convert them accordingly
+            if(key === 'eyes' || key ==='legs'){
+                animalObject[key] = Number(value);
+            }
+            else{
+                animalObject[key] = value;
+            }
         });
 
-        const eleNameError = animalForm.name.nextElementSibling;
+        const eleNameError = animalForm.name.nextElementSibling
         try {
-            if (animalId) {
-                await animalService.updateAnimal(animalId, animalObject);
-            } else {
-                await animalService.saveAnimal(animalObject);
-            }
-
+            await animalService.saveAnimal(animalObject)
             eleNameError.classList.add('d-none');
             animalForm.reset();
             window.location = './list.html';
@@ -68,26 +49,29 @@ async function submitAnimalForm(event) {
             console.log(error);
             eleNameError.classList.remove('d-none');
             eleNameError.textContent = "This animal already exists!";
-        }
+        }        
+    // do nothing if it's not
     } else {
-        console.log('Form is not valid');
+        console.log('were not good');
     }
 }
 
-// Validate the animal form
-function validateAnimalForm(form) {
-    console.log('Validating form');
+// validate the animal form
+function validateAnimalForm ( form ) {
+    console.log('validating')
     let valid = true;
+    // test that name is valid
     const name = form.name.value;
-    const eleNameError = form.name.nextElementSibling;
-
-    if (name.trim() === "") {
+    const eleNameError = form.name.nextElementSibling
+    if (name == "") {
         eleNameError.classList.remove('d-none');
         eleNameError.textContent = "You must name this animal!";
         valid = false;
     } else {
         eleNameError.classList.add('d-none');
     }
+    // add validation for the remaining fields. 
 
-    return valid;
+    // return if the form is valid or not
+    return valid
 }
