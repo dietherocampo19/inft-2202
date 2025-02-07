@@ -5,6 +5,13 @@
     Date: January 10, 2025
     Description: Handles searching, displaying, and deleting animals.
 */
+/*
+    Name: Diether Ocampo
+    filename: search.js
+    Course: INFT 2202
+    Date: January 10, 2025
+    Description: Handles searching, displaying, and deleting animals.
+*/
 
 // Wait for the DOM to load before executing
 document.addEventListener("DOMContentLoaded", () => {
@@ -74,3 +81,4 @@ function attachEventListeners() {
         });
     });
 }
+
