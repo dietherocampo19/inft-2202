@@ -11,164 +11,106 @@ async function animal(name) {
     const form = document.createElement('form');
     let description = 'Add Animal';
     let animal = null;
+
     function createContent() {
         const container = document.createElement('div');
         container.classList.add('mb-2');
-        //create animal form content
+
         const mb3Name = document.createElement('div');
         mb3Name.classList.add('mb-3');
         let editableInput = `<input type="text" class="form-control" id="name" name="name">`;
-        let readonlyInput = `<input type="text" class="form-control" id="name" name="name" value="${animal!=null?animal.name:""}" readonly>`;
-        mb3Name.innerHTML = '<label for="name" class="form-label">Animal Name</label>' +
-            (animal!=null ? readonlyInput : editableInput) +
-            '<p class="text-danger d-none"></p>';
+        let readonlyInput = `<input type="text" class="form-control" id="name" name="name" value="${animal ? animal.name : ""}" readonly>`;
+        mb3Name.innerHTML = `<label for="name" class="form-label">Animal Name</label>` +
+            (animal ? readonlyInput : editableInput) +
+            `<p class="text-danger d-none"></p>`;
         container.append(mb3Name);
 
-        const mb3Breed = document.createElement('div');
-        mb3Breed.classList.add('mb-3');
-        mb3Breed.innerHTML = '<label for="breed" class="form-label">Animal Breed</label>' +
-            `<input type="text" class="form-control" id="breed" name="breed" value="${animal!=null?animal.breed:""}">` +
-            '<p class="text-danger d-none"></p>';
-        container.append(mb3Breed);
-        
-        const mb3Leg = document.createElement('div');
-        mb3Leg.classList.add('mb-3');
-        mb3Leg.innerHTML = '<label for="legs" class="form-label">Number of Legs</label>' +
-            '<input type="text" class="form-control" id="legs" name="legs">' +
-            '<p class="text-danger d-none"></p>';
-        container.append(mb3Leg);
-        
-        const mb3Eye = document.createElement('div');
-        mb3Eye.classList.add('mb-3');
-        mb3Eye.innerHTML = '<label for="eyes" class="form-label">Number of Eyes</label>' +
-            '<input type="text" class="form-control" id="eyes" name="eyes">' +
-            '<p class="text-danger d-none"></p>';
-        container.append(mb3Eye);
-        
-        const mb3Sound = document.createElement('div');
-        mb3Sound.classList.add('mb-3');
-        mb3Sound.innerHTML = '<label for="sound" class="form-label">Sound this animal makes</label>' +
-            '<input type="text" class="form-control" id="sound" name="sound">' +
-            '<p class="text-danger d-none"></p>';
-        container.append(mb3Sound);        
+        const fields = ["breed", "legs", "eyes", "sound"];
+        fields.forEach(field => {
+            const div = document.createElement('div');
+            div.classList.add('mb-3');
+            div.innerHTML = `<label for="${field}" class="form-label">${field.charAt(0).toUpperCase() + field.slice(1)}</label>` +
+                `<input type="text" class="form-control" id="${field}" name="${field}" value="${animal ? animal[field] : ""}">` +
+                `<p class="text-danger d-none"></p>`;
+            container.append(div);
+        });
 
         const submitBtn = document.createElement('div');
-        submitBtn.innerHTML = '<button type="submit" class="btn btn-primary">' +
-            'Save Animal <i class="fa-solid fa-check"></i>' +
-            '</button>';
-        container.append(submitBtn);        
-        ///
+        submitBtn.innerHTML = `<button type="submit" class="btn btn-primary">
+            Save Animal <i class="fa-solid fa-check"></i>
+        </button>`;
+        container.append(submitBtn);
+
         form.append(container);
         return form;
     }
+
     function validate() {
         let valid = true;
-        // validate form
-        // test that name is valid
-        const name = form.name.value;
-        const eleNameError = form.name.nextElementSibling
+        const fields = ["name", "breed", "legs", "eyes"];
+        fields.forEach(field => {
+            const input = form[field];
+            const errorElement = input.nextElementSibling;
+            if (!input.value.trim()) {
+                errorElement.classList.remove('d-none');
+                errorElement.textContent = `Please enter ${field}!`;
+                valid = false;
+            } else {
+                errorElement.classList.add('d-none');
+            }
+        });
 
-        if (name == "") {
-            eleNameError.classList.remove('d-none');
-            eleNameError.textContent = "You must name this animal!";
+        if (isNaN(form.legs.value) || isNaN(form.eyes.value)) {
+            form.legs.nextElementSibling.classList.remove('d-none');
+            form.legs.nextElementSibling.textContent = "This must be a number.";
             valid = false;
-        } else {
-            eleNameError.classList.add('d-none');
         }
 
-        // test that breed is valid
-        const breed = form.breed.value;
-        const eleBreedError = form.breed.nextElementSibling
-        if (breed == "") {
-            eleBreedError.classList.remove('d-none');
-            eleBreedError.textContent = "What type of animal is this?";
-            valid = false;
-        } else {
-            eleBreedError.classList.add('d-none');
-        }
+        return valid;
+    }
 
-        const legs = form.legs.value;
-        const eleLegsError = form.legs.nextElementSibling
-        if (legs == "") {
-            eleLegsError.classList.remove('d-none');
-            eleLegsError.textContent = "How many legs does this animal have?";
-            valid = false;
-        } else if (isNaN(legs)) {
-            eleLegsError.classList.remove('d-none');
-            eleLegsError.textContent = "This must be a number.";
-            valid = false;
-        } else {
-            eleLegsError.classList.add('d-none');
-        }
-
-        const eyes = form.eyes.value; // check that these are numbers
-        const sound = form.sound.value;
-        // return if the form is valid or not
-        return valid
-    }    
-    // create a handler to deal with the submit event
     async function submit(action) {
-        // validate the form
-        const valid = validate();
-        // do stuff if the form is valid
-        if (valid) {
-            console.log('were good');
-
+        if (validate()) {
             const formData = new FormData(form);
             const animalObject = {};
             formData.forEach((value, key) => {
-                if (key === 'eyes' || key === 'legs') {
-                    animalObject[key] = Number(value);
-                }
-                else {
-                    animalObject[key] = value;
-                }
+                animalObject[key] = key === "legs" || key === "eyes" ? Number(value) : value;
             });
 
-            const eleNameError = form.name.nextElementSibling
             try {
-                if(action=="new"){
-                    await animalService.saveAnimal([animalObject]);
+                if (action === "new") {
+                    await animalService.saveAnimal(animalObject);
                 } else {
-                    await animalService.updateAnimal(animalObject)
-                } 
-                eleNameError.classList.add('d-none');
+                    await animalService.updateAnimal(animalObject);
+                }
                 form.reset();
-                window.location = './list.html';
+                window.location = "./list.html";
             } catch (error) {
                 console.log(error);
-                eleNameError.classList.remove('d-none');
-                eleNameError.textContent = "This animal already exists!";
+                form.name.nextElementSibling.classList.remove('d-none');
+                form.name.nextElementSibling.textContent = "This animal already exists!";
             }
-            // do nothing if it's not
-        } else {
-            console.log('were not good');
         }
     }
-    
+
     if (!name) {
-        // assign a handler to the submit event
-        form.addEventListener('submit', function (event) {
-            // prevent the default action from happening
+        form.addEventListener('submit', event => {
             event.preventDefault();
             submit("new");
         });
-    }
-    else{
-        description = 'Update Animal';
-        let ret = await animalService.findAnimal(name);
-        animal = ret[0];
-        form.addEventListener('submit', function (event) {
-            // prevent the default action from happening
+    } else {
+        description = "Update Animal";
+        animal = await animalService.findAnimal(name);
+        form.addEventListener('submit', event => {
             event.preventDefault();
             submit("update");
-        });         
+        });
     }
 
     return {
         description,
         element: createContent()
-    }
+    };
 }
 
 export default animal;
