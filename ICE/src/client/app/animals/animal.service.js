@@ -7,81 +7,114 @@
 */
 
 /*
- *  Service constructor
+ *  Since we are using the regular function keyword, 
+ *   we can export our service instance up here.
  */
-function AnimalService() {
-    // if there is no entry for animals in local storage
-    if (!localStorage.getItem('animals')) {
-        // create a new entry in local storage and put an empty array in it
-        localStorage.setItem('animals', JSON.stringify([]))
+export default new AnimalService({
+    host: 'https://inft2202-server.onrender.com/',
+    // host: 'http://localhost:3090',
+});
+
+/*
+ *  Constructor
+ */
+function AnimalService({ host, apikey }) {
+    this.host = host;
+    this.headers = new Headers({
+        "Content-Type": "application/json",
+        apikey
+    });
+}
+
+/*
+ *
+ */
+AnimalService.prototype.findAnimal = async function(name) {
+    const url = new URL(`/api/animals/${name}`, this.host);
+    const req = new Request(url, {
+        headers: this.headers,
+        method: 'GET',
+    });
+    try {
+        const res = await fetch(req);
+        return res.json();
+    } catch (err) {
+        return false;
+    }
+}
+/*
+ *
+ */
+AnimalService.prototype.getAnimalPage = async function({ page = 1, perPage = 8 }) 
+{
+    const params = new URLSearchParams({ page, perPage });
+    const url = new URL(`/api/animals?${params.toString()}`, this.host);
+    const req = new Request(url, {
+        headers: this.headers,
+        method: 'GET',
+    });
+    try {
+        const res = await fetch(req);
+        return res.json();
+    } catch (err) {
+        return false;
     }
 }
 
 /*
  *
  */
-AnimalService.prototype.getAnimals = function() {
-    // this will always be set, because we did it in the constructor
-    return JSON.parse(localStorage.getItem('animals'));
+AnimalService.prototype.saveAnimal = async function(animals) 
+{
+    const url = new URL(`/api/animals`, this.host);
+    const req = new Request(url, {
+        headers: this.headers,
+        method: 'POST',
+        body: JSON.stringify(animals)
+    });
+    try {
+        const res = await fetch(req);
+        return res.json();
+    } catch (err) {
+        return false;
+    }
 }
 
 /*
  *
  */
-AnimalService.prototype.saveAnimal = function(animal) {
-    // get a list of animals
-    const animals = this.getAnimals();
-    // see if this animal already exists
-    if (animals.find(a => a.name == animal.name)) {
-        // tell the caller we're not going to save this
-        throw new Error('An animal with that name already exists!');
+AnimalService.prototype.updateAnimal = async function(animal) 
+{
+    const url = new URL(`/api/animals`, this.host);
+    const req = new Request(url, {
+        headers: this.headers,
+        method: 'PUT',
+        body: JSON.stringify(animal)
+    });
+    try {
+        const res = await fetch(req);
+        return res.json();
+    } catch (err) {
+        return false;
     }
-    // if it doesn't, add it to the array
-    animals.push(animal);
-    // and save it in storage again
-    localStorage.setItem('animals', JSON.stringify(animals));
-    // tell the caller all was well
-    return true;
 }
 
 /*
  *
  */
-AnimalService.prototype.findAnimal = function(animalName) {
-    const animals = this.getAnimals();
-    const animal = animals.find(a => a.name == animalName);
-    if (!animal) {
-        throw new Error('That animal does not exist!');
+AnimalService.prototype.deleteAnimal = async function(name) {
+    const url = new URL(`/api/animals/${name}`, this.host);
+    const req = new Request(url, {
+        headers: this.headers,
+        method: 'DELETE',
+    });
+    try {
+        const res = await fetch(req);
+        if (res.status === 204) {
+            return true;
+        }
+        return false;
+    } catch (err) {
+        return false;
     }
-    return animal;
 }
-
-/*
- *
- */
-AnimalService.prototype.updateAnimal = function(animal) {
-    const animals = this.getAnimals();
-    const idx = animals.findIndex(a => a.name == animal.name);
-    if (idx === -1) {
-        throw new Error('That animal does not exist!');
-    }
-    animals[idx] = animal;
-    localStorage.setItem('animals', JSON.stringify(animals));
-    return true;
-}
-
-/*
- *
- */
-AnimalService.prototype.deleteAnimal = function(animal) {
-    const animals = this.getAnimals();
-    const idx = animals.findIndex(a => a.name == animal.name);
-    if (idx === -1) {
-        throw new Error('That animal does not exist!');
-    }
-    animals.splice(idx, 1);
-    localStorage.setItem('animals', JSON.stringify(animals));
-    return true;
-}
-
-export default new AnimalService();

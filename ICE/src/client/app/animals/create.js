@@ -5,72 +5,47 @@
     Date: January 10 2025
     Description: 
 */
-// tell us what page we're on
-console.log('we are on the add page');
+import AnimalService from "./animal.service.js";
 
-// assign a handler to the submit event
-document.getElementById('animal-form')
-    .addEventListener('submit', submitAnimalForm);
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector("#animalForm");
+    const nameInput = document.querySelector("#name");
+    const speciesInput = document.querySelector("#species");
+    const ageInput = document.querySelector("#age");
+    const formTitle = document.querySelector("#formTitle");
+    const urlParams = new URLSearchParams(window.location.search);
+    const animalName = urlParams.get("id");
 
-// create a handler to deal with the submit event
-async function submitAnimalForm ( event ) {
-    // prevent the default action from happening
-    event.preventDefault();
-    // get a reference to the form (from the event)
-    const animalForm = event.target;  
-    // validate the form
-    const valid = validateAnimalForm(animalForm);
-    // do stuff if the form is valid
-    if (valid) {
-        console.log('were good');
+    async function setupEditForm() {
+        if (!animalName) return;
+        formTitle.textContent = "Edit Animal";
+        nameInput.disabled = true;
         
-        const formData = new FormData(animalForm);
-        //create a javascript object to hold the form data
-        const animalObject = {};
-        formData.forEach((value, key) => {
-            //by default, a value from form is string
-            //we need to convert them accordingly
-            if(key === 'eyes' || key ==='legs'){
-                animalObject[key] = Number(value);
-            }
-            else{
-                animalObject[key] = value;
-            }
-        });
-
-        const eleNameError = animalForm.name.nextElementSibling
-        try {
-            await animalService.saveAnimal(animalObject)
-            eleNameError.classList.add('d-none');
-            animalForm.reset();
-            window.location = './list.html';
-        } catch (error) {
-            console.log(error);
-            eleNameError.classList.remove('d-none');
-            eleNameError.textContent = "This animal already exists!";
-        }        
-    // do nothing if it's not
-    } else {
-        console.log('were not good');
+        const animal = await AnimalService.findAnimal(animalName);
+        if (animal) {
+            nameInput.value = animal.name;
+            speciesInput.value = animal.species;
+            ageInput.value = animal.age;
+        }
     }
-}
 
-// validate the animal form
-function validateAnimalForm ( form ) {
-    console.log('validating')
-    let valid = true;
-    // test that name is valid
-    const name = form.name.value;
-    const eleNameError = form.name.nextElementSibling
-    if (name == "") {
-        eleNameError.classList.remove('d-none');
-        eleNameError.textContent = "You must name this animal!";
-        valid = false;
-    } else {
-        eleNameError.classList.add('d-none');
-    }
-    // add validation for the remaining fields. 
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        
+        const animalData = {
+            name: nameInput.value,
+            species: speciesInput.value,
+            age: ageInput.value,
+        };
 
-    // return if the form is valid or not
-    return valid
-}
+        if (animalName) {
+            await AnimalService.updateAnimal(animalData);
+        } else {
+            await AnimalService.saveAnimal(animalData);
+        }
+
+        window.location.href = "search.html";
+    });
+
+    setupEditForm();
+});
