@@ -33,6 +33,8 @@ async function animal(name) {
          readonlyInput =  `<input type="text" class="form-control" id="breed" name="breed" value="${animal!=null?animal.breed:""}">` +
          '<p class="text-danger d-none"></p>';
         mb3Breed.innerHTML = '<label for="breed" class="form-label">Animal Breed</label>' +
+             (animal!=null ? readonlyInput : editableInput) +
+            '<p class="text-danger d-none"></p>';
         container.append(mb3Breed);
         
         const mb3Leg = document.createElement('div');
@@ -41,6 +43,8 @@ async function animal(name) {
         readonlyInput = `<input type="text" class="form-control" id="legs" name="legs"  value="${animal!=null?animal.legs:""}">` +
             '<p class="text-danger d-none"></p>';
         mb3Leg.innerHTML = '<label for="legs" class="form-label">Number of Legs</label>' +
+              (animal!=null ? readonlyInput : editableInput) +
+            '<p class="text-danger d-none"></p>';
         container.append(mb3Leg);
         
         const mb3Eye = document.createElement('div');
@@ -49,6 +53,8 @@ async function animal(name) {
         readonlyInput =   `<input type="text" class="form-control" id="eyes" name="eyes ${animal!=null?animal.eyes:""}">` +
         '<p class="text-danger d-none"></p>';
         mb3Eye.innerHTML = '<label for="eyes" class="form-label">Number of Eyes</label>' +
+              (animal!=null ? readonlyInput : editableInput) +
+            '<p class="text-danger d-none"></p>';
         container.append(mb3Eye);
         
         const mb3Sound = document.createElement('div');
@@ -57,6 +63,8 @@ async function animal(name) {
          readonlyInput =   `<input type="text" class="form-control" id="sound" name="sound" ${animal!=null?animal.sound:""}">` +
          '<p class="text-danger d-none"></p>';
         mb3Sound.innerHTML = '<label for="sound" class="form-label">Sound this animal makes</label>' +
+          (animal!=null ? readonlyInput : editableInput) +
+            '<p class="text-danger d-none"></p>';
         container.append(mb3Sound);        
 
         const submitBtn = document.createElement('div');
