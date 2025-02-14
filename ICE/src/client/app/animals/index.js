@@ -29,9 +29,10 @@ async function animal(name) {
 
         const mb3Breed = document.createElement('div');
         mb3Breed.classList.add('mb-3');
+         editableInput = `<input type="text" class="form-control" id="name" name="name">`;
+         readonlyInput =  `<input type="text" class="form-control" id="breed" name="breed" value="${animal!=null?animal.breed:""}">` +
+         '<p class="text-danger d-none"></p>';
         mb3Breed.innerHTML = '<label for="breed" class="form-label">Animal Breed</label>' +
-            `<input type="text" class="form-control" id="breed" name="breed" value="${animal!=null?animal.breed:""}">` +
-            '<p class="text-danger d-none"></p>';
         container.append(mb3Breed);
         
         const mb3Leg = document.createElement('div');
@@ -43,9 +44,10 @@ async function animal(name) {
         
         const mb3Eye = document.createElement('div');
         mb3Eye.classList.add('mb-3');
+        editableInput = `<input type="text" class="form-control" id="name" name="name">`;
+        readonlyInput =   `<input type="text" class="form-control" id="eyes" name="eyes ${animal!=null?animal.eyes:""}">` +
+        '<p class="text-danger d-none"></p>';
         mb3Eye.innerHTML = '<label for="eyes" class="form-label">Number of Eyes</label>' +
-            `<input type="text" class="form-control" id="eyes" name="eyes ${animal!=null?animal.eyes:""}">` +
-            '<p class="text-danger d-none"></p>';
         container.append(mb3Eye);
         
         const mb3Sound = document.createElement('div');

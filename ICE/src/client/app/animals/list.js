@@ -85,8 +85,8 @@ function list(recordPage) {
         const url = new URL(`/api/animals?${params.toString()}`, 'https://inft2202.opentech.durhamcollege.org');
         const req = new Request(url, {
             headers: {
-                'User': 'studentId',
-                'apiKey': '7bfa2060-9d12-42fe-8549-cf9205d269a0'
+                'User': '100944258',
+                'apiKey': ' 650f932f-5032-485a-b43c-f7d1aa35d27d'
             },
             method: 'GET',
         });
