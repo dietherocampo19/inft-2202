@@ -1,0 +1,83 @@
+<!-- Name: Diether Ocampo -->
+<!-- Course: INFT 2202 -->
+<!-- Date: January 30, 2025 -->
+<!-- Description: This is the create page of my site. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Pokémon Card</title>
+    <link href="../../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../node_modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="./css/styles.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column h-100">
+    
+    <header class="d-flex justify-content-center py-3">
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="create.html" class="nav-link active" aria-current="page">Add Card</a></li>
+            <li class="nav-item"><a href="search.html" class="nav-link">View Cards</a></li>
+            <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+        </ul>
+    </header>
+
+    <main class="container my-4">
+        <h1 class="text-center" id="form-title">Add a Pokémon Card</h1>
+        <form id="product-form" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="product-name" class="form-label">Card Name</label>
+                <input type="text" id="product-name" class="form-control" required>
+                <div class="invalid-feedback">Card name is required.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="product-type" class="form-label">Card Type</label>
+                <select id="product-type" class="form-control" required>
+                    <option value="" disabled selected>Select Card Type</option>
+                    <option value="Basic">Basic</option>
+                    <option value="Stage 1">Stage 1</option>
+                    <option value="Stage 2">Stage 2</option>
+                    <option value="EX">EX</option>
+                    <option value="GX">GX</option>
+                    <option value="V">V</option>
+                    <option value="VMax">VMax</option>
+                </select>
+                <div class="invalid-feedback">Please select a card type.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="product-price" class="form-label">Price ($)</label>
+                <input type="number" id="product-price" class="form-control" step="0.01" required>
+                <div class="invalid-feedback">Enter a valid price (e.g., 10.99).</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="product-stock" class="form-label">Stock Quantity</label>
+                <input type="number" id="product-stock" class="form-control" required>
+                <div class="invalid-feedback">Enter a valid stock quantity.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="product-description" class="form-label">Description</label>
+                <textarea id="product-description" class="form-control" rows="3" required></textarea>
+                <div class="invalid-feedback">Description is required.</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100" id="submit-btn">Add Card</button>
+        </form>
+    </main>
+
+    <footer class="text-center mt-auto py-3">
+        <p>&copy; <span id="year"></span> Pokémon Card Hub. All rights reserved.</p>
+    </footer>
+
+    <script src="../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app/app.js"></script>
+    <script type="module" src="app/products/create.js"></script>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!-- Name: Diether Ocampo -->
+<!-- Course: INFT 2202 -->
+<!-- Date: January 30, 2025 -->
+<!-- Description: This is the search index site for Pokémon cards. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Pokémon Cards</title>
+    <link href="../../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../node_modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="./css/styles.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column h-100">
+    
+    <header class="d-flex justify-content-center py-3">
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="create.html" class="nav-link">Add Card</a></li>
+            <li class="nav-item"><a href="search.html" class="nav-link active" aria-current="page">View Cards</a></li>
+            <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+        </ul>
+    </header>
+
+    <main class="container my-4">
+        <h1 class="text-center">Pokémon Card Collection</h1>
+        <p class="text-center">Browse through our extensive collection of Pokémon cards. Catch ‘em all!</p>
+        <div id="product-list" class="row g-4"></div>
+        
+        <nav>
+            <ul class="pagination justify-content-center mt-4" id="pagination"></ul>
+        </nav>
+    </main>
+
+    <!-- Modal for Deleting Product -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to remove this Pokémon card from the collection?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-3 mt-auto">
+        <p>&copy; <span id="year"></span> Pokémon Card Hub</p>
+    </footer>
+
+    <script src="../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app/app.js"></script>
+    <script type="module" src="app/products/search.js"></script>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

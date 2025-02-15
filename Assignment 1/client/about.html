@@ -1,0 +1,68 @@
+<!-- Name: Diether Ocampo -->
+<!-- Course: INFT 2202 -->
+<!-- Date: January 30, 2025 -->
+<!-- Description: This is the about page. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Me - Diether Ocampo</title>
+
+  <link href="../../node_modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="../../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="./css/styles.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column h-100">
+  
+  <header class="d-flex justify-content-center py-3">
+    <ul class="nav nav-pills">
+      <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+      <li class="nav-item"><a href="create.html" class="nav-link">Add Card</a></li>
+      <li class="nav-item"><a href="search.html" class="nav-link">Browse Cards</a></li>
+      <li class="nav-item"><a href="about.html" class="nav-link active">About</a></li>
+    </ul>
+  </header>
+
+  <section class="container my-5">
+    <h1>About Me</h1>
+    <p><strong>Name:</strong> Diether Ocampo</p>
+    <p><strong>From:</strong> Philippines</p>
+
+    <h2>Career Goals</h2>
+    <p>
+      I am a <strong>2nd-year college student</strong> studying <strong>programming</strong> and specializing in <strong>web development</strong>.  
+      My goal is to become a full-stack developer, building modern, responsive, and user-friendly websites and applications.
+    </p>
+
+    <h2>Skills & Technologies</h2>
+    <p>
+      I have experience with <strong>HTML, CSS, Bootstrap, PHP, PostgreSQL, and C#</strong>.  
+      I enjoy working on both front-end and back-end development, and I’m currently improving my skills in **.NET and REST API development**.
+    </p>
+
+    <h2>Passions & Interests</h2>
+    <p>
+      Aside from programming, I have a strong passion for <strong>photojournalism and video editing</strong>.  
+      I aim to combine these skills by creating visually appealing and interactive web experiences.
+    </p>
+
+    <h2>What I’m Looking For</h2>
+    <p>
+      After graduation, I hope to work as a <strong>Web Developer</strong> or <strong>Software Engineer</strong>,  
+      focusing on creating interactive and accessible web applications.
+    </p>
+  </section>
+
+  <footer class="text-center py-3 mt-auto">
+    <p>&copy; <span id="year"></span> Diether Ocampo</p>
+  </footer>
+
+  <script src="../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app/app.js"></script>
+  <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+</body>
+</html>
