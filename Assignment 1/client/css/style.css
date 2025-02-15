@@ -58,3 +58,19 @@ footer {
     border-radius: 50%;
 }
 
+/* Make carousel control buttons invisible but still clickable */
+.carousel-control-prev,
+.carousel-control-next {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  opacity: 0; /* Make them invisible */
+  pointer-events: auto; /* Still clickable */
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: brightness(0) invert(1); /* Change icon color to white for visibility */
+}
+
+
