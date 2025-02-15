@@ -27,16 +27,23 @@ class ProductService {
     }
 
     // Add a new product
-    createProduct(product) {
-        const products = this.listProducts();
-        const exists = products.some(p => p.name.toLowerCase() === product.name.toLowerCase());
-        if (exists) throw new Error("That product already exists!");
-
-        products.push(product);
-        localStorage.setItem("products", JSON.stringify(products));
-        return true;
+// In your ProductService class
+createProduct(product) {
+    console.log("Attempting to create product:", product); // Debug log
+    const products = this.listProducts();
+    console.log("Current products:", products); // Debug log
+    
+    const exists = products.some(p => p.name.toLowerCase() === product.name.toLowerCase());
+    if (exists) {
+        console.log("Product already exists!"); // Debug log
+        throw new Error("That product already exists!");
     }
 
+    products.push(product);
+    localStorage.setItem("products", JSON.stringify(products));
+    console.log("Product created successfully"); // Debug log
+    return true;
+}
     // Update an existing product
     updateProduct(updatedProduct) {
         const products = this.listProducts();

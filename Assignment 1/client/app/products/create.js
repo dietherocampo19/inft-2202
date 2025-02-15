@@ -5,19 +5,19 @@
     Date: January 30, 2025
     Description: This is my Pokémon card creation script.
 */
-import productService from "./product.mock.service.js";
-import Pokemon from "./pokemon.js"; // Updated to import Pokemon class
+import productService from "./pokemon.mock.service.js";
+import Pokemon from "./pokemon.js";
 
-const form = document.getElementById("pokemon-form");
+// Update these to match your HTML IDs
+const form = document.getElementById("product-form");
 const formTitle = document.getElementById("form-title");
 const submitBtn = document.getElementById("submit-btn");
 
-const nameInput = document.getElementById("pokemon-name");
-const typeInput = document.getElementById("pokemon-type");
-const hpInput = document.getElementById("pokemon-hp");
-const attackInput = document.getElementById("pokemon-attack");
-const descInput = document.getElementById("pokemon-description");
-const imageInput = document.getElementById("pokemon-image-url");
+const nameInput = document.getElementById("product-name");
+const typeInput = document.getElementById("product-type");
+const priceInput = document.getElementById("product-price");    // Changed from hp
+const stockInput = document.getElementById("product-stock");    // Changed from attack
+const descInput = document.getElementById("product-description");
 
 const params = new URLSearchParams(window.location.search);
 const pokemonId = params.get("id");
@@ -27,16 +27,15 @@ if (pokemonId) {
     submitBtn.textContent = "Update Pokémon";
 
     try {
-        const pokemon = productService.findProduct(pokemonId); // Assuming you have the findProduct function
+        const pokemon = productService.findProduct(pokemonId);
         nameInput.value = pokemon.name;
         typeInput.value = pokemon.type;
-        hpInput.value = pokemon.hp;
-        attackInput.value = pokemon.attack;
+        priceInput.value = pokemon.price;
+        stockInput.value = pokemon.stock;
         descInput.value = pokemon.description;
-        imageInput.value = pokemon.imageUrl;
     } catch (error) {
         console.error(error);
-        window.location.href = "search.html"; // Redirect if Pokémon card not found
+        window.location.href = "search.html";
     }
 }
 
@@ -50,26 +49,22 @@ form.addEventListener("submit", (event) => {
         id: pokemonId ? pokemonId : null,
         name: nameInput.value.trim(),
         type: typeInput.value.trim(),
-        hp: parseInt(hpInput.value),
-        attack: parseInt(attackInput.value),
-        description: descInput.value.trim(),
-        imageUrl: imageInput.value.trim(),
+        price: parseFloat(priceInput.value),    // Changed from hp
+        stock: parseInt(stockInput.value),       // Changed from attack
+        description: descInput.value.trim()
     };
 
-    if (pokemonId) {
-        try {
-            productService.updateProduct(new Pokemon(pokemonData)); // Update the Pokémon object
-            window.location.href = "search.html"; // Redirect after update
-        } catch (error) {
-            console.error(error);
+    try {
+        if (pokemonId) {
+            productService.updateProduct(new Pokemon(pokemonData));
+        } else {
+            productService.createProduct(new Pokemon(pokemonData));
+            console.log("Pokemon created successfully");
         }
-    } else {
-        try {
-            productService.createProduct(new Pokemon(pokemonData)); // Create new Pokémon object
-            window.location.href = "search.html"; // Redirect after creation
-        } catch (error) {
-            console.error(error);
-        }
+        window.location.href = "search.html";
+    } catch (error) {
+        console.error("Error:", error.message);
+        alert(error.message);
     }
 });
 
@@ -83,25 +78,25 @@ function validateForm() {
         setValid(nameInput);
     }
 
-    if (!typeInput.value.trim()) {
+    if (!typeInput.value.trim() || typeInput.value === "Select Card Type") {
         setInvalid(typeInput);
         isValid = false;
     } else {
         setValid(typeInput);
     }
 
-    if (!hpInput.value.trim() || isNaN(hpInput.value) || parseInt(hpInput.value) <= 0) {
-        setInvalid(hpInput);
+    if (!priceInput.value.trim() || isNaN(priceInput.value) || parseFloat(priceInput.value) <= 0) {
+        setInvalid(priceInput);
         isValid = false;
     } else {
-        setValid(hpInput);
+        setValid(priceInput);
     }
 
-    if (!attackInput.value.trim() || isNaN(attackInput.value) || parseInt(attackInput.value) <= 0) {
-        setInvalid(attackInput);
+    if (!stockInput.value.trim() || isNaN(stockInput.value) || parseInt(stockInput.value) < 0) {
+        setInvalid(stockInput);
         isValid = false;
     } else {
-        setValid(attackInput);
+        setValid(stockInput);
     }
 
     if (!descInput.value.trim()) {
@@ -109,13 +104,6 @@ function validateForm() {
         isValid = false;
     } else {
         setValid(descInput);
-    }
-
-    if (!imageInput.value.trim()) {
-        setInvalid(imageInput);
-        isValid = false;
-    } else {
-        setValid(imageInput);
     }
 
     return isValid;

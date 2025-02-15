@@ -6,47 +6,48 @@
     Description: This is my search script.
 */
 
-import pokemonService from "./pokemon.mock.service.js";
+import productService from "./pokemon.mock.service.js";
 
-const pokemonList = document.getElementById("pokemon-list");
+// Update these to match your HTML IDs
+const productList = document.getElementById("product-list");  // Changed from pokemon-list
 const pagination = document.getElementById("pagination");
 
-const POKEMONS_PER_PAGE = 6;
+const PRODUCTS_PER_PAGE = 6;  // Changed from POKEMONS_PER_PAGE
 let currentPage = 1;
 
 function renderPokemons() {
-    const pokemons = pokemonService.listPokemons();
+    const products = productService.listProducts();
     
-    if (pokemons.length === 0) {
-        pokemonList.innerHTML = `<div class="alert alert-warning text-center" role="alert">
+    if (products.length === 0) {
+        productList.innerHTML = `<div class="alert alert-warning text-center" role="alert">
             No Pokémon cards available at the moment.
         </div>`;
         pagination.innerHTML = "";
         return;
     }
 
-    const start = (currentPage - 1) * POKEMONS_PER_PAGE;
-    const paginatedPokemons = pokemons.slice(start, start + POKEMONS_PER_PAGE);
+    const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
+    const paginatedProducts = products.slice(start, start + PRODUCTS_PER_PAGE);
 
-    pokemonList.innerHTML = paginatedPokemons.map(pokemon => `
+    productList.innerHTML = paginatedProducts.map(product => `
         <div class="col-md-4">
-            <div class="card shadow">
-                <img src="${pokemon.imageUrl}" class="card-img-top" alt="${pokemon.name}">
+            <div class="card shadow mb-4">
                 <div class="card-body">
-                    <h5 class="card-title">${pokemon.name || 'Unknown Pokémon'}</h5>
+                    <h5 class="card-title">${product.name || 'Unknown Pokémon'}</h5>
                     <p class="card-text">
-                        <strong>Type:</strong> ${pokemon.type || 'Unknown'} <br>
-                        <strong>HP:</strong> ${pokemon.hp || '0'} <br>
-                        <strong>Attack:</strong> ${pokemon.attack || '0'} <br>
-                        <strong>Description:</strong> ${pokemon.description || 'No description available.'}
+                        <strong>Type:</strong> ${product.type || 'Unknown'} <br>
+                        <strong>Price:</strong> $${product.price?.toFixed(2) || '0.00'} <br>
+                        <strong>Stock:</strong> ${product.stock || '0'} <br>
+                        <strong>Description:</strong> ${product.description || 'No description available.'}
                     </p>
-                    <button class="btn btn-primary">Add to Deck</button>
-                    <button class="btn btn-warning edit-pokemon" data-id="${pokemon.id}" title="Edit">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-danger delete-pokemon" data-id="${pokemon.id}" title="Delete">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-warning edit-pokemon" data-id="${product.id}" title="Edit">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-danger delete-pokemon" data-id="${product.id}" title="Delete">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -54,25 +55,25 @@ function renderPokemons() {
 
     setupTooltips();
     setupDeleteButtons();
-    setupPagination(pokemons.length);
+    setupPagination(products.length);
     setupEditButtons();
 }
 
 function setupDeleteButtons() {
-    let pokemonToDelete = null;
+    let productToDelete = null;
     const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
     
     document.querySelectorAll(".delete-pokemon").forEach(button => {
         button.addEventListener("click", (event) => {
-            const pokemonId = event.currentTarget.getAttribute("data-id");
-            pokemonToDelete = pokemonId;
+            const productId = event.currentTarget.getAttribute("data-id");
+            productToDelete = productId;
             modal.show();
         });
     });
 
     document.getElementById('confirmDelete').addEventListener('click', () => {
-        if (pokemonToDelete) {
-            pokemonService.deletePokemon(pokemonToDelete);
+        if (productToDelete) {
+            productService.deleteProduct(productToDelete);
             renderPokemons();
         }
         modal.hide();
@@ -80,13 +81,13 @@ function setupDeleteButtons() {
 }
 
 function setupTooltips() {
-    document.querySelectorAll(".edit-pokemon, .delete-pokemon").forEach(button => {
-        new bootstrap.Tooltip(button);
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(element => {
+        new bootstrap.Tooltip(element);
     });
 }
 
-function setupPagination(totalPokemons) {
-    const totalPages = Math.ceil(totalPokemons / POKEMONS_PER_PAGE);
+function setupPagination(totalProducts) {
+    const totalPages = Math.ceil(totalProducts / PRODUCTS_PER_PAGE);
     pagination.innerHTML = "";
 
     for (let i = 1; i <= totalPages; i++) {
@@ -105,8 +106,8 @@ function setupPagination(totalPokemons) {
 function setupEditButtons() {
     document.querySelectorAll(".edit-pokemon").forEach(button => {
         button.addEventListener("click", (event) => {
-            const pokemonId = event.currentTarget.getAttribute("data-id");
-            window.location.href = `create.html?id=${pokemonId}`;
+            const productId = event.currentTarget.getAttribute("data-id");
+            window.location.href = `create.html?id=${productId}`;
         });
     });
 }
@@ -114,4 +115,3 @@ function setupEditButtons() {
 document.addEventListener("DOMContentLoaded", () => {
     renderPokemons();
 });
-

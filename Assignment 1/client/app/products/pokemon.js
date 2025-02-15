@@ -6,18 +6,17 @@
     Description: This is my Pokémon script.
 */
 
-export default function Pokemon({ id = null, name, type, hp, attack, description, imageUrl }) {
+export default function Pokemon({ id = null, name, type, price, stock, description }) {
     this.id = id ?? crypto.randomUUID();
     this.name = name;
     this.type = type;
-    this.hp = hp;
-    this.attack = attack;
+    this.price = price;
+    this.stock = stock;
     this.description = description;
-    this.imageUrl = imageUrl;
 }
 
 Pokemon.prototype.toString = function () {
-    return `${this.name} - Type: ${this.type}, HP: ${this.hp}, Attack: ${this.attack}, Description: ${this.description}`;
+    return `${this.name} - Type: ${this.type}, Price: $${this.price}, Stock: ${this.stock}, Description: ${this.description}`;
 };
 
 Pokemon.prototype.toJSON = function () {
@@ -25,9 +24,9 @@ Pokemon.prototype.toJSON = function () {
         id: this.id,
         name: this.name,
         type: this.type,
-        hp: this.hp,
-        attack: this.attack,
-        description: this.description,
-        imageUrl: this.imageUrl
+        price: this.price,
+        stock: this.stock,
+        description: this.description
     };
 };
+
