@@ -1,0 +1,26 @@
+header {
+    background-color: #003366; /* Dark Navy Blue */
+    color: white;
+  }
+  
+
+body {
+  background-color: #ADD8E6; /* Light Blue */
+}
+
+.carousel-caption h5, 
+.carousel-caption p {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), 
+               -2px -2px 4px rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 2rem; /* Adjust the size as needed */
+}
+
+.carousel-caption p {
+  font-size: 1.2rem; /* Slightly smaller for the paragraph text */
+}
+
+footer {
+    background-color: black;
+    color: white;
+  }
