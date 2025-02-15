@@ -15,7 +15,7 @@ const pagination = document.getElementById("pagination");
 const PRODUCTS_PER_PAGE = 6;  // Changed from POKEMONS_PER_PAGE
 let currentPage = 1;
 
-function renderPokemons() {
+function renderProduct() {
     const products = productService.listProducts();
     
     if (products.length === 0) {
@@ -31,27 +31,28 @@ function renderPokemons() {
 
     productList.innerHTML = paginatedProducts.map(product => `
         <div class="col-md-4">
-            <div class="card shadow mb-4">
+            <div class="card shadow">
+                <img src="./css/poke-pack.jpg" class="card-img-top" alt="${product.name}">
                 <div class="card-body">
-                    <h5 class="card-title">${product.name || 'Unknown Pokémon'}</h5>
+                    <h5 class="card-title">${product.name || 'Unknown Product'}</h5>
                     <p class="card-text">
-                        <strong>Type:</strong> ${product.type || 'Unknown'} <br>
-                        <strong>Price:</strong> $${product.price?.toFixed(2) || '0.00'} <br>
+                        <strong>Price:</strong> $${product.price || '0.00'} <br>
                         <strong>Stock:</strong> ${product.stock || '0'} <br>
                         <strong>Description:</strong> ${product.description || 'No description available.'}
                     </p>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-warning edit-pokemon" data-id="${product.id}" title="Edit">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button class="btn btn-danger delete-pokemon" data-id="${product.id}" title="Delete">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
+                    <button class="btn btn-primary">Add to Cart</button>
+                    <button class="btn btn-warning edit-product" data-id="${product.id}" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-danger delete-product" data-id="${product.id}" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
             </div>
         </div>
     `).join("");
+
+    
 
     setupTooltips();
     setupDeleteButtons();
@@ -63,7 +64,7 @@ function setupDeleteButtons() {
     let productToDelete = null;
     const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
     
-    document.querySelectorAll(".delete-pokemon").forEach(button => {
+    document.querySelectorAll(".delete-product").forEach(button => {
         button.addEventListener("click", (event) => {
             const productId = event.currentTarget.getAttribute("data-id");
             productToDelete = productId;
@@ -74,7 +75,7 @@ function setupDeleteButtons() {
     document.getElementById('confirmDelete').addEventListener('click', () => {
         if (productToDelete) {
             productService.deleteProduct(productToDelete);
-            renderPokemons();
+            renderProducts();
         }
         modal.hide();
     });
@@ -97,7 +98,7 @@ function setupPagination(totalProducts) {
         pageItem.addEventListener("click", (event) => {
             event.preventDefault();
             currentPage = i;
-            renderPokemons();
+            renderProduct();
         });
         pagination.appendChild(pageItem);
     }
@@ -113,5 +114,5 @@ function setupEditButtons() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    renderPokemons();
+    renderProduct();
 });
