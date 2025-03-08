@@ -7,11 +7,11 @@ function list(recordPage) {
     const divWaiting = document.createElement('div');
     divWaiting.classList.add('text-center');
     divWaiting.innerHTML = '<i class="fa fa-5x fa-spinner fa-spin"></i>';
-    container.append(divWaiting); // Append divWaiting here
+    container.append(divWaiting); 
 
     const divMessage = document.createElement('div');
     divMessage.classList.add('alert', 'text-center', 'd-none');
-    container.append(divMessage); // Append divMessage here
+    container.append(divMessage); 
 
     function drawPagination({ page = 1, perPage = 5, pages = 10 }) {
         function addPage(number, text, style) {
@@ -21,7 +21,7 @@ function list(recordPage) {
         }
         const pagination = document.createElement('div');
         if (pages > 1) {
-            pagination.classList.remove('d-none'); // Access classList after appending
+            pagination.classList.remove('d-none'); 
         }
         const ul = document.createElement("ul");
         ul.classList.add('pagination')
@@ -54,8 +54,6 @@ function list(recordPage) {
             row.insertCell().textContent = animal.eyes;
             row.insertCell().textContent = animal.sound;
             const eleBtnCell = row.insertCell();
-            // You might want to add a class here if needed:
-            // eleBtnCell.classList.add('btn-group'); 
             const eleBtnDelete = document.createElement('button');
             eleBtnDelete.classList.add('btn', 'btn-danger', 'mx-1');
             eleBtnDelete.innerHTML = `<i class="fa fa-trash"></i>`;
@@ -82,7 +80,7 @@ function list(recordPage) {
         const req = new Request(url, {
             headers: {
                 'User': '100944258',
-                'apiKey': '650f932f-5032-485a-b43c-f7d1aa35d27d' // Removed extra space
+                'apiKey': '650f932f-5032-485a-b43c-f7d1aa35d27d' 
             },
             method: 'GET',
         });
@@ -90,15 +88,20 @@ function list(recordPage) {
         fetch(req)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    // More specific error handling
+                    if (response.status === 401) {
+                        throw new Error('Unauthorized: Please check your API key and User ID.'); 
+                    } else {
+                        throw new Error('Network response was not ok. Status: ' + response.status);
+                    }
                 }
                 return response.json();
             })
             .then((ret) => {
                 let { records, pagination } = ret;
-                divWaiting.classList.add('d-none'); // Access classList after appending
+                divWaiting.classList.add('d-none'); 
                 let header = document.createElement('div');
-                header.classList.add('d-flex', 'justify-content-between'); // Access classList after appending
+                header.classList.add('d-flex', 'justify-content-between'); 
                 let h1 = document.createElement('h1');
                 h1.innerHTML = 'Animal List';
                 header.append(h1);
@@ -107,10 +110,10 @@ function list(recordPage) {
                 container.append(drawAnimalTable(records));
             })
             .catch(err => {
-                divWaiting.classList.add('d-none'); // Access classList after appending
-                divMessage.innerHTML = err;
-                divMessage.classList.remove('d-none'); // Access classList after appending
-                divMessage.classList.add('alert-danger'); // Access classList after appending
+                divWaiting.classList.add('d-none'); 
+                divMessage.innerHTML = err.message; // Display the error message
+                divMessage.classList.remove('d-none'); 
+                divMessage.classList.add('alert-danger'); 
             });
         return container;
     }
