@@ -76,25 +76,23 @@ function list(recordPage) {
         }
     }
 
-    function createContent() {
+    function createContent() { // Assuming this is where you're making the API call
         const params = new URLSearchParams(recordPage);
         const url = new URL(`/api/animals?${params.toString()}`, 'https://inft2202.opentech.durhamcollege.org');
         const req = new Request(url, {
             headers: {
-                'User': '100944258',
-                'apiKey': '3816cc78-08c7-498e-96f7-325edb238ea2'
+                'User': '100944258', // Ensure this is the correct User ID
+                'apiKey': '650f932f-5032-485a-b43c-f7d1aa35d27d' // Ensure this is the correct API key
             },
             method: 'GET',
         });
-
+    
         fetch(req)
             .then(response => {
                 if (!response.ok) {
                     // More specific error handling
                     if (response.status === 401) {
                         throw new Error('Unauthorized: Please check your API key and User ID.');
-                    } else if (response.status === 404) {
-                        throw new Error('API not found. Please check the URL.'); // Example of a more specific error
                     } else {
                         throw new Error('Network response was not ok. Status: ' + response.status);
                     }
