@@ -7,31 +7,33 @@ function list(recordPage) {
     const divWaiting = document.createElement('div');
     divWaiting.classList.add('text-center');
     divWaiting.innerHTML = '<i class="fa fa-5x fa-spinner fa-spin"></i>';
-    container.append(divWaiting); 
+    container.append(divWaiting);
 
     const divMessage = document.createElement('div');
     divMessage.classList.add('alert', 'text-center', 'd-none');
-    container.append(divMessage); 
+    container.append(divMessage);
 
     function drawPagination({ page = 1, perPage = 5, pages = 10 }) {
         function addPage(number, text, style) {
             return `<li class="page-item ${style}">
-                    <a class="page-link" href="./list.html?page=${number}&perPage=${perPage}">${text}</a>
-                </li>`
+                        <a class="page-link" href="./list.html?page=${number}&perPage=${perPage}">${text}</a>
+                    </li>`
         }
         const pagination = document.createElement('div');
+        const ul = document.createElement("ul"); // Create the ul element here
+        ul.classList.add('pagination');
+
         if (pages > 1) {
-            pagination.classList.remove('d-none'); 
+            pagination.classList.remove('d-none');
         }
-        const ul = document.createElement("ul");
-        ul.classList.add('pagination')
-        ul.insertAdjacentHTML('beforeend', addPage(page - 1, 'Previous', (page == 1) ? 'disabled' : ''))
+
+        ul.insertAdjacentHTML('beforeend', addPage(page - 1, 'Previous', (page == 1) ? 'disabled' : ''));
         for (let i = 1; i <= pages; i++) {
             ul.insertAdjacentHTML('beforeend', addPage(i, i, (i == page) ? 'active' : ''));
         }
-        ul.insertAdjacentHTML('beforeend', addPage(page + 1, 'Next', (page == pages) ? 'disabled' : ''))
+        ul.insertAdjacentHTML('beforeend', addPage(page + 1, 'Next', (page == pages) ? 'disabled' : ''));
 
-        pagination.append(ul);
+        pagination.append(ul); // Now append the ul to the pagination div
         return pagination;
     }
 
@@ -80,7 +82,7 @@ function list(recordPage) {
         const req = new Request(url, {
             headers: {
                 'User': '100944258',
-                'apiKey': '650f932f-5032-485a-b43c-f7d1aa35d27d' 
+                'apiKey': '650f932f-5032-485a-b43c-f7d1aa35d27d'
             },
             method: 'GET',
         });
@@ -90,7 +92,9 @@ function list(recordPage) {
                 if (!response.ok) {
                     // More specific error handling
                     if (response.status === 401) {
-                        throw new Error('Unauthorized: Please check your API key and User ID.'); 
+                        throw new Error('Unauthorized: Please check your API key and User ID.');
+                    } else if (response.status === 404) {
+                        throw new Error('API not found. Please check the URL.'); // Example of a more specific error
                     } else {
                         throw new Error('Network response was not ok. Status: ' + response.status);
                     }
@@ -99,9 +103,9 @@ function list(recordPage) {
             })
             .then((ret) => {
                 let { records, pagination } = ret;
-                divWaiting.classList.add('d-none'); 
+                divWaiting.classList.add('d-none');
                 let header = document.createElement('div');
-                header.classList.add('d-flex', 'justify-content-between'); 
+                header.classList.add('d-flex', 'justify-content-between');
                 let h1 = document.createElement('h1');
                 h1.innerHTML = 'Animal List';
                 header.append(h1);
@@ -110,10 +114,10 @@ function list(recordPage) {
                 container.append(drawAnimalTable(records));
             })
             .catch(err => {
-                divWaiting.classList.add('d-none'); 
+                divWaiting.classList.add('d-none');
                 divMessage.innerHTML = err.message; // Display the error message
-                divMessage.classList.remove('d-none'); 
-                divMessage.classList.add('alert-danger'); 
+                divMessage.classList.remove('d-none');
+                divMessage.classList.add('alert-danger');
             });
         return container;
     }
