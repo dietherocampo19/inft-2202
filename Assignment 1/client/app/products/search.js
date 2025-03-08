@@ -59,17 +59,17 @@ function renderProducts() {
 }
 
 function setupDeleteButtons() {
+    let productToDelete = null;
     const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
-
+    
     document.querySelectorAll(".delete-product").forEach(button => {
         button.addEventListener("click", (event) => {
-            productToDelete = event.currentTarget.getAttribute("data-id");
+            const productId = event.currentTarget.getAttribute("data-id");
+            productToDelete = productId;
             modal.show();
         });
     });
 
-    const confirmDeleteBtn = document.getElementById('confirmDelete');
-    confirmDeleteBtn.replaceWith(confirmDeleteBtn.cloneNode(true)); // Remove previous event listeners
     document.getElementById('confirmDelete').addEventListener('click', () => {
         if (productToDelete) {
             productService.deleteProduct(productToDelete);
