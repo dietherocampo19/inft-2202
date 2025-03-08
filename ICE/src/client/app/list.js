@@ -51,8 +51,10 @@ try {
         drawPagination(pagination);
     }    
 }
-catch(ex) {
-    eleWaiting.classList.add('d-none');
+catch (ex) {
+    if (eleWaiting) { // Check if eleWaiting exists
+        eleWaiting.classList.add('d-none');
+    }
     const errorMessage = document.querySelector('#error-message');
     errorMessage.innerHTML = ex;
     errorMessage.classList.remove('d-none');
