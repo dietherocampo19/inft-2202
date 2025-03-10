@@ -9,7 +9,7 @@
 const API_KEY = "3816cc78-08c7-498e-96f7-325edb238ea2"; // ⬅️ Replace this with your actual API key.
 
 export default new AnimalService({
-    host: 'https://inft2202.opentech.durhamcollege.org/api', // Correct base URL
+    host: ' https://inft2202-server.onrender.com/', // Correct base URL
     apikey: API_KEY, // Pass API key properly
 });
 
