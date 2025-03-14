@@ -1,132 +1,109 @@
-export default class AnimalService {
-    constructor() {
-      this.apiUrl = 'https://inft2202.opentech.durhamcollege.org/api/animals';
-      this.apiKey = '3816cc78-08c7-498e-96f7-325edb238ea2'; // Replace this with your actual API key
-    }
-  
-    async getAllAnimals() {
-      try {
-        const response = await fetch(this.apiUrl, {
-          method: 'GET',
-          headers: {
-            'apikey': this.apiKey,
-            'Content-Type': 'application/json'
-          }
+export default new AnimalService({
+    host: 'https://inft2202.opentech.durhamcollege.org/api/animals',
+    apiKey: '3816cc78-08c7-498e-96f7-325edb238ea2' // Replace with your actual API Key
+});
+/*
+ *  Constructor
+ */
+function AnimalService({ host, apiKey }) {
+    this.host = host;
+    this.headers = new Headers({
+        'Content-Type': 'application/json',
+        'apikey': apiKey
+    });
+}
+
+/*
+ *  Get animal by name
+ */
+AnimalService.prototype.findAnimal = async function(name) {
+    const url = `${this.host}/${name}`;
+    try {
+        const res = await fetch(url, {
+            headers: this.headers,
+            method: 'GET',
         });
-  
-        if (!response.ok) {
-          throw new Error(`Failed to fetch animals: ${response.status}`);
-        }
-  
-        return await response.json();
-      } catch (error) {
-        console.error('Error fetching animals:', error);
-        return [];
-      }
-    }
-  
-    async getAnimalById(id) {
-      try {
-        const response = await fetch(`${this.apiUrl}/${id}`, {
-          method: 'GET',
-          headers: {
-            'apikey': this.apiKey,
-            'Content-Type': 'application/json'
-          }
-        });
-  
-        if (!response.ok) {
-          throw new Error(`Failed to fetch animal ${id}: ${response.status}`);
-        }
-  
-        return await response.json();
-      } catch (error) {
-        console.error(`Error fetching animal ${id}:`, error);
-        return null;
-      }
-    }
-  
-    async createAnimal(animalData) {
-      try {
-        const response = await fetch(this.apiUrl, {
-          method: 'POST',
-          headers: {
-            'apikey': this.apiKey,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(animalData)
-        });
-  
-        if (!response.ok) {
-          throw new Error(`Failed to create animal: ${response.status}`);
-        }
-  
-        return await response.json();
-      } catch (error) {
-        console.error('Error creating animal:', error);
-        return null;
-      }
-    }
-  
-    async updateAnimal(id, animalData) {
-      try {
-        const response = await fetch(`${this.apiUrl}/${id}`, {
-          method: 'PUT',
-          headers: {
-            'apikey': this.apiKey,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(animalData)
-        });
-  
-        if (!response.ok) {
-          throw new Error(`Failed to update animal ${id}: ${response.status}`);
-        }
-  
-        return await response.json();
-      } catch (error) {
-        console.error(`Error updating animal ${id}:`, error);
-        return null;
-      }
-    }
-  
-    async deleteAnimal(id) {
-      try {
-        const response = await fetch(`${this.apiUrl}/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'apikey': this.apiKey
-          }
-        });
-  
-        if (!response.ok) {
-          throw new Error(`Failed to delete animal ${id}: ${response.status}`);
-        }
-  
-        return true;
-      } catch (error) {
-        console.error(`Error deleting animal ${id}:`, error);
+        if (!res.ok) throw new Error(`Error: ${res.status} ${res.statusText}`);
+        return res.json();
+    } catch (err) {
+        console.error("Error fetching animal:", err);
         return false;
-      }
     }
-    async listAnimals(page = 1, perPage = 5) {
-        const url = `${this.baseUrl}?page=${page}&perPage=${perPage}`;
+}
 
-        try {
-            const response = await fetch(url, {
-                method: "GET",
-                headers: { "apikey": this.apiKey }
-            });
+/*
+ *  Get paginated list of animals
+ */
+AnimalService.prototype.getAnimalPage = async function({ page = 1, perPage = 5 }) {
+    const url = `${this.host}?page=${page}&perPage=${perPage}`;
+    try {
+        const res = await fetch(url, {
+            headers: this.headers,
+            method: 'GET',
+        });
+        if (!res.ok) throw new Error(`Error: ${res.status} ${res.statusText}`);
+        return res.json();
+    } catch (err) {
+        console.error("Error fetching animal list:", err);
+        return false;
+    }
+}
 
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status} - ${response.statusText}`);
-            }
+/*
+ *  Save a new animal
+ */
+AnimalService.prototype.saveAnimal = async function(animal) {
+    const url = this.host;
+    try {
+        const res = await fetch(url, {
+            headers: this.headers,
+            method: 'POST',
+            body: JSON.stringify(animal)
+        });
+        if (!res.ok) throw new Error(`Error: ${res.status} ${res.statusText}`);
+        return res.json();
+    } catch (err) {
+        console.error("Error saving animal:", err);
+        return false;
+    }
+}
 
-            return await response.json(); // Return only the body
-        } catch (error) {
-            console.error("Failed to fetch animals:", error);
-            throw error;
+/*
+ *  Update an existing animal
+ */
+AnimalService.prototype.updateAnimal = async function(animal) {
+    const url = this.host;
+    try {
+        const res = await fetch(url, {
+            headers: this.headers,
+            method: 'PUT',
+            body: JSON.stringify(animal)
+        });
+        if (!res.ok) throw new Error(`Error: ${res.status} ${res.statusText}`);
+        return res.json();
+    } catch (err) {
+        console.error("Error updating animal:", err);
+        return false;
+    }
+}
+
+/*
+ *  Delete an animal by name
+ */
+AnimalService.prototype.deleteAnimal = async function(name) {
+    const url = `${this.host}/${name}`;
+    try {
+        const res = await fetch(url, {
+            headers: this.headers,
+            method: 'DELETE',
+        });
+        if (res.status === 204) {
+            return true;
         }
+        throw new Error(`Error: ${res.status} ${res.statusText}`);
+    } catch (err) {
+        console.error("Error deleting animal:", err);
+        return false;
     }
 }
 
