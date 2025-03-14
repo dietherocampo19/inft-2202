@@ -5,7 +5,7 @@
     Date: January 10 2025
     Description: 
 */
-import animalService from "../animal.service.js";
+import animalService from "../animal.service.mock.js";
 
 async function animal(name) {
     const form = document.createElement('form');
