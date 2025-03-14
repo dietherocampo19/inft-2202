@@ -69,32 +69,35 @@ async function animal(name) {
         form.append(container);
         return form;
     }
-    function validate() {
-        let valid = true;
-        // validate form
-        // test that name is valid
-        const name = form.name.value;
-        const eleNameError = form.name.nextElementSibling
+    javascript
+function validate() {
+    let valid = true;
+    // validate form
+    // test that name is valid
+    const name = form.name.value;
+    const eleNameError = form.name.nextElementSibling
+    
+    if (name == "") {
+        eleNameError.classList.remove('d-none');
+        eleNameError.textContent = "You must name this animal!";
+        valid = false;
+    } else {
+        eleNameError.classList.add('d-none');
+    }
 
-        if (name == "") {
-            eleNameError.classList.remove('d-none');
-            eleNameError.textContent = "You must name this animal!";
-            valid = false;
-        } else {
-            eleNameError.classList.add('d-none');
-        }
+    // test that breed is valid
+    const breed = form.breed.value;
+    const eleBreedError = form.breed.nextElementSibling
+    if (breed == "") {
+        eleBreedError.classList.remove('d-none');
+        eleBreedError.textContent = "What type of animal is this?";
+        valid = false;
+    } else {
+        eleBreedError.classList.add('d-none');
+    }
 
-        // test that breed is valid
-        const breed = form.breed.value;
-        const eleBreedError = form.breed.nextElementSibling
-        if (breed == "") {
-            eleBreedError.classList.remove('d-none');
-            eleBreedError.textContent = "What type of animal is this?";
-            valid = false;
-        } else {
-            eleBreedError.classList.add('d-none');
-        }
-
+    // Ensure "legs" exists
+    if (form.legs) {
         const legs = form.legs.value;
         const eleLegsError = form.legs.nextElementSibling
         if (legs == "") {
@@ -108,12 +111,33 @@ async function animal(name) {
         } else {
             eleLegsError.classList.add('d-none');
         }
+    } else {
+        valid = false;
+        console.error("Form element 'legs' not found");
+    }
 
-        const eyes = form.eyes.value; // check that these are numbers
+    // Ensure "eyes" exists
+    if (form.eyes) {
+        const eyes = form.eyes.value;
+        // Add your validation for eyes here
+    } else {
+        valid = false;
+        console.error("Form element 'eyes' not found");
+    }
+
+    const sound = form.sound.value;
+    // Ensure "sound" exists
+    if (form.sound) {
         const sound = form.sound.value;
-        // return if the form is valid or not
-        return valid
-    }    
+        // Add your validation for sound here
+    } else {
+        valid = false;
+        console.error("Form element 'sound' not found");
+    }
+
+    // return if the form is valid or not
+    return valid
+}
     // create a handler to deal with the submit event
     async function submit(action) {
         // validate the form
