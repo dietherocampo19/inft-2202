@@ -5,7 +5,7 @@
     Date: January 30, 2025
     Description: This is my product service script.
 */
-import Product from "./pokemon.js";
+import Product from "./pokemon.mock.js";
 
 class ProductService {
     constructor() {
