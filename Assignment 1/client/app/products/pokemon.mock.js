@@ -13,10 +13,12 @@ export default function Pokemon({ id = null, name, type, price, stock, descripti
     this.price = price;
     this.stock = stock;
     this.description = description;
+    this.owner = owner;  
+    this.listedAt = listedAt;
 }
 
 Pokemon.prototype.toString = function () {
-    return `${this.name} - Type: ${this.type}, Price: $${this.price}, Stock: ${this.stock}, Description: ${this.description}`;
+    return `${this.name} - Type: ${this.type}, Price: $${this.price}, Stock: ${this.stock}, Description: ${this.description},Owner: ${this.owner}, Listed At: ${new Date(this.listedAt).toLocaleString()}`;
 };
 
 Pokemon.prototype.toJSON = function () {
@@ -26,7 +28,9 @@ Pokemon.prototype.toJSON = function () {
         type: this.type,
         price: this.price,
         stock: this.stock,
-        description: this.description
+        description: this.description,
+        owner: this.owner,
+        listedAt: this.listedA
     };
 };
 
