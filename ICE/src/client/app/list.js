@@ -7,7 +7,7 @@
 */
 
 
-import animalService from "../src/client/animal.service.mock.js";
+import animalService from "./animal.mock.service.js";
 
 function list(recordPage) {
     const container = document.createElement('div');
