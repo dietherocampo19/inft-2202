@@ -2,8 +2,9 @@ export default new AnimalService({
     host: 'https://inft2202.opentech.durhamcollege.org/api/animals',
     apiKey: '3816cc78-08c7-498e-96f7-325edb238ea2' // Replace with your actual API Key
 });
+
 /*
- *  Constructor
+ * Constructor
  */
 function AnimalService({ host, apiKey }) {
     this.host = host;
@@ -14,7 +15,7 @@ function AnimalService({ host, apiKey }) {
 }
 
 /*
- *  Get animal by name
+ * Get animal by name
  */
 AnimalService.prototype.findAnimal = async function(name) {
     const url = `${this.host}/${name}`;
@@ -32,7 +33,7 @@ AnimalService.prototype.findAnimal = async function(name) {
 }
 
 /*
- *  Get paginated list of animals
+ * Get paginated list of animals
  */
 AnimalService.prototype.getAnimalPage = async function({ page = 1, perPage = 5 }) {
     const url = `${this.host}?page=${page}&perPage=${perPage}`;
@@ -50,7 +51,7 @@ AnimalService.prototype.getAnimalPage = async function({ page = 1, perPage = 5 }
 }
 
 /*
- *  Save a new animal
+ * Save a new animal
  */
 AnimalService.prototype.saveAnimal = async function(animal) {
     const url = this.host;
@@ -69,15 +70,15 @@ AnimalService.prototype.saveAnimal = async function(animal) {
 }
 
 /*
- *  Update an existing animal
+ * Update an existing animal (Corrected)
  */
-AnimalService.prototype.updateAnimal = async function(animal) {
-    const url = this.host;
+AnimalService.prototype.updateAnimal = async function(updatedAnimal) {
+    const url = this.host; // No ID in URL, uses name in body
     try {
         const res = await fetch(url, {
             headers: this.headers,
             method: 'PUT',
-            body: JSON.stringify(animal)
+            body: JSON.stringify(updatedAnimal)
         });
         if (!res.ok) throw new Error(`Error: ${res.status} ${res.statusText}`);
         return res.json();
@@ -88,7 +89,7 @@ AnimalService.prototype.updateAnimal = async function(animal) {
 }
 
 /*
- *  Delete an animal by name
+ * Delete an animal by name (Corrected)
  */
 AnimalService.prototype.deleteAnimal = async function(name) {
     const url = `${this.host}/${name}`;
@@ -97,14 +98,10 @@ AnimalService.prototype.deleteAnimal = async function(name) {
             headers: this.headers,
             method: 'DELETE',
         });
-        if (res.status === 204) {
-            return true;
-        }
-        throw new Error(`Error: ${res.status} ${res.statusText}`);
+        if (!res.ok) throw new Error(`Error: ${res.status} ${res.statusText}`);
+        return res.json(); // Return the JSON response
     } catch (err) {
         console.error("Error deleting animal:", err);
         return false;
     }
 }
-
-  
