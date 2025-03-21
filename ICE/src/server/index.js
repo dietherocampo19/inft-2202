@@ -1,13 +1,13 @@
-const express = require('express');
+import express from "express";
+import config from './service/config.js';
+
 const app = express();
-const port = 5000;
+const port = 3000;
 
-app.use(express.static('public')); // Serve static files from the 'public' directory
+app.use(express.static('public'));  
 
-app.get('/hello', (req, res) => {
-  res.send('Hello World!');
-});
+config(app); 
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+    console.log(`Example app listening on port ${port}!`);
 });
