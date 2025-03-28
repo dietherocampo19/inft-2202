@@ -16,3 +16,6 @@ function doValidation (request, response, next)
   next(new ConflictError('Input Validation Failed', errObj));
 }
 
+export function checkValidation (rules) {
+  return [...rules, doValidation]
+}
