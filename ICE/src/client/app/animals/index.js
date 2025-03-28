@@ -5,7 +5,7 @@
     Date: January 10 2025
     Description: 
 */
-import animalService from "../animal.service.mock.js";
+import animalService from "../animal.service.js";
 
 async function animal(name) {
     const form = document.createElement('form');
@@ -26,37 +26,29 @@ async function animal(name) {
 
         const mb3Breed = document.createElement('div');
         mb3Breed.classList.add('mb-3');
-         editableInput = `<input type="text" class="form-control" id="breed" name="breed">`;
-         readonlyInput = `<input type="text" class="form-control" id="breed" name="breed" value="${animal!=null?animal.breed:""}">`;
         mb3Breed.innerHTML = '<label for="breed" class="form-label">Animal Breed</label>' +
-            (animal!=null ? readonlyInput : editableInput) +
+            `<input type="text" class="form-control" id="breed" name="breed" value="${animal!=null?animal.breed:""}">` +
             '<p class="text-danger d-none"></p>';
         container.append(mb3Breed);
         
         const mb3Leg = document.createElement('div');
         mb3Leg.classList.add('mb-3');
-         editableInput = `<input type="text" class="form-control" id="leg" name="leg">`;
-         readonlyInput = `<input type="text" class="form-control" id="leg" name="leg" value="${animal!=null?animal.leg:""}">`;
-        mb3Leg.innerHTML = '<label for="leg" class="form-label">Animal Leg</label>' +
-            (animal!=null ? readonlyInput : editableInput) +
+        mb3Leg.innerHTML = '<label for="legs" class="form-label">Number of Legs</label>' +
+            '<input type="text" class="form-control" id="legs" name="legs">' +
             '<p class="text-danger d-none"></p>';
         container.append(mb3Leg);
         
         const mb3Eye = document.createElement('div');
         mb3Eye.classList.add('mb-3');
-         editableInput = `<input type="text" class="form-control" id="eye" name="eye">`;
-         readonlyInput = `<input type="text" class="form-control" id="eye" name="eye" value="${animal!=null?animal.eye:""}">`;
-        mb3Eye.innerHTML = '<label for="eye" class="form-label">Animal Eye</label>' +
-            (animal!=null ? readonlyInput : editableInput) +
+        mb3Eye.innerHTML = '<label for="eyes" class="form-label">Number of Eyes</label>' +
+            '<input type="text" class="form-control" id="eyes" name="eyes">' +
             '<p class="text-danger d-none"></p>';
         container.append(mb3Eye);
         
         const mb3Sound = document.createElement('div');
         mb3Sound.classList.add('mb-3');
-         editableInput = `<input type="text" class="form-control" id="sound" name="sound">`;
-         readonlyInput = `<input type="text" class="form-control" id="sound" name="sound" value="${animal!=null?animal.sound:""}">`;
-        mb3Sound.innerHTML = '<label for="eye" class="form-label">Animal Sound</label>' +
-            (animal!=null ? readonlyInput : editableInput) +
+        mb3Sound.innerHTML = '<label for="sound" class="form-label">Sound this animal makes</label>' +
+            '<input type="text" class="form-control" id="sound" name="sound">' +
             '<p class="text-danger d-none"></p>';
         container.append(mb3Sound);        
 
@@ -69,35 +61,32 @@ async function animal(name) {
         form.append(container);
         return form;
     }
-    javascript
-function validate() {
-    let valid = true;
-    // validate form
-    // test that name is valid
-    const name = form.name.value;
-    const eleNameError = form.name.nextElementSibling
-    
-    if (name == "") {
-        eleNameError.classList.remove('d-none');
-        eleNameError.textContent = "You must name this animal!";
-        valid = false;
-    } else {
-        eleNameError.classList.add('d-none');
-    }
+    function validate() {
+        let valid = true;
+        // validate form
+        // test that name is valid
+        const name = form.name.value;
+        const eleNameError = form.name.nextElementSibling
 
-    // test that breed is valid
-    const breed = form.breed.value;
-    const eleBreedError = form.breed.nextElementSibling
-    if (breed == "") {
-        eleBreedError.classList.remove('d-none');
-        eleBreedError.textContent = "What type of animal is this?";
-        valid = false;
-    } else {
-        eleBreedError.classList.add('d-none');
-    }
+        if (name == "") {
+            eleNameError.classList.remove('d-none');
+            eleNameError.textContent = "You must name this animal!";
+            valid = false;
+        } else {
+            eleNameError.classList.add('d-none');
+        }
 
-    // Ensure "legs" exists
-    if (form.legs) {
+        // test that breed is valid
+        const breed = form.breed.value;
+        const eleBreedError = form.breed.nextElementSibling
+        if (breed == "") {
+            eleBreedError.classList.remove('d-none');
+            eleBreedError.textContent = "What type of animal is this?";
+            valid = false;
+        } else {
+            eleBreedError.classList.add('d-none');
+        }
+
         const legs = form.legs.value;
         const eleLegsError = form.legs.nextElementSibling
         if (legs == "") {
@@ -111,33 +100,12 @@ function validate() {
         } else {
             eleLegsError.classList.add('d-none');
         }
-    } else {
-        valid = false;
-        console.error("Form element 'legs' not found");
-    }
 
-    // Ensure "eyes" exists
-    if (form.eyes) {
-        const eyes = form.eyes.value;
-        // Add your validation for eyes here
-    } else {
-        valid = false;
-        console.error("Form element 'eyes' not found");
-    }
-
-    const sound = form.sound.value;
-    // Ensure "sound" exists
-    if (form.sound) {
+        const eyes = form.eyes.value; // check that these are numbers
         const sound = form.sound.value;
-        // Add your validation for sound here
-    } else {
-        valid = false;
-        console.error("Form element 'sound' not found");
-    }
-
-    // return if the form is valid or not
-    return valid
-}
+        // return if the form is valid or not
+        return valid
+    }    
     // create a handler to deal with the submit event
     async function submit(action) {
         // validate the form
