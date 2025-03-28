@@ -1,105 +1,144 @@
-import { movies } from "./movies.js";
+import { movies } from '../data/movies.js';
 
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("Loaded movies:", movies); // Debugging: Ensure movies load properly
+console.log('Movies loaded:', movies);
 
-    const allMoviesTable = document.querySelector("#all-movies-container table");
-    const pinnedMoviesTable = document.querySelector("#pinned-movies-container table");
-    const allMoviesAlert = document.querySelector("#all-movies-container .alert");
-    const pinnedMoviesAlert = document.querySelector("#pinned-movies-container .alert");
+const allMoviesContainer = document.getElementById('all-movies-container');
+const pinnedMoviesContainer = document.getElementById('pinned-movies-container');
+const allMoviesTable = allMoviesContainer.querySelector('table');
+const pinnedMoviesTable = pinnedMoviesContainer.querySelector('table');
+const pinnedMoviesCheck = pinnedMoviesContainer.querySelector('.check');
 
-    let pinnedMovies = getPinnedMoviesFromStorage();
-    console.log("Loaded pinned movies:", pinnedMovies); // Debugging: Ensure pinned movies load properly
+allMoviesTable.classList.remove('d-none');
+insertMoviesIntoTable(allMoviesTable, movies);
 
-    if (pinnedMovies.length === 0) {
-        pinnedMoviesAlert.classList.remove("d-none");
-        pinnedMoviesTable.classList.add("d-none");
-    } else {
-        pinnedMoviesAlert.classList.add("d-none");
-        pinnedMoviesTable.classList.remove("d-none");
-        insertMoviesIntoTable(pinnedMoviesTable, pinnedMovies);
-    }
+const pinnedMovies = getPinnedMoviesFromStorage();
+console.log('Pinned movies:', pinnedMovies);
 
-    insertMoviesIntoTable(allMoviesTable, movies.filter(movie => movie.genre !== "Drama"));
-});
+if (pinnedMovies.length === 0) {
+    pinnedMoviesCheck.classList.remove('d-none');
+} else {
+    pinnedMoviesTable.classList.remove('d-none');
+    insertMoviesIntoTable(pinnedMoviesTable, pinnedMovies, true);
+}
 
-/**
- * Retrieve pinned movies from local storage.
- * @returns {Array} An array of pinned movies.
- */
+
 function getPinnedMoviesFromStorage() {
-    return JSON.parse(localStorage.getItem("pinnedMovies")) || [];
-}
-
-/**
- * Inserts movies into the given table and applies sorting, styling, and pinning logic.
- * @param {HTMLElement} eleTable - The table to populate.
- * @param {Array} movies - The list of movies to insert.
- */
-function insertMoviesIntoTable(eleTable, movies) {
-    const tbody = eleTable.querySelector("tbody");
-    tbody.innerHTML = ""; // Clear previous content
-
-    // Sort movies by rating (highest to lowest)
-    movies.sort((a, b) => b.rating - a.rating);
-
-    movies.forEach(movie => {
-        const row = document.createElement("tr");
-
-        // Apply row color based on rating
-        if (movie.rating <= 2) row.classList.add("table-danger"); // Red
-        else if (movie.rating <= 5) row.classList.add("table-warning"); // Orange
-        else if (movie.rating <= 8) row.classList.add("table-primary"); // Blue
-        else row.classList.add("table-success"); // Green
-
-        row.innerHTML = `
-            <td>${movie.title}</td>
-            <td>${movie.genre}</td>
-            <td>${new Date(movie.release_date * 1000).toLocaleDateString()}</td>
-            <td>${movie.director}</td>
-            <td>${movie.rating}</td>
-            <td><button class="btn ${isPinned(movie) ? "btn-danger" : "btn-primary"} pin-btn" data-title="${movie.title}">
-                <i class="fa ${isPinned(movie) ? "fa-times" : "fa-pencil"}"></i>
-            </button></td>
-        `;
-
-        tbody.appendChild(row);
-    });
-
-    // Add event listeners for pin buttons
-    tbody.querySelectorAll(".pin-btn").forEach(button => {
-        button.addEventListener("click", () => {
-            togglePinMovie(button.getAttribute("data-title"));
-        });
-    });
-}
-
-/**
- * Checks if a movie is already pinned.
- * @param {Object} movie - The movie object to check.
- * @returns {boolean} - True if the movie is pinned, false otherwise.
- */
-function isPinned(movie) {
-    const pinnedMovies = getPinnedMoviesFromStorage();
-    return pinnedMovies.some(m => m.title === movie.title);
-}
-
-/**
- * Toggles a movie's pin status.
- * @param {string} title - The movie title to pin/unpin.
- */
-function togglePinMovie(title) {
-    let pinnedMovies = getPinnedMoviesFromStorage();
-    const movie = movies.find(m => m.title === title);
-
-    if (!movie) return;
-
-    if (isPinned(movie)) {
-        pinnedMovies = pinnedMovies.filter(m => m.title !== title);
-    } else {
-        pinnedMovies.push(movie);
+    const pinnedMoviesJSON = localStorage.getItem('pinnedMovies');
+    
+    if (!pinnedMoviesJSON) {
+        return [];
     }
+    
+    return JSON.parse(pinnedMoviesJSON);
+}
 
-    localStorage.setItem("pinnedMovies", JSON.stringify(pinnedMovies));
-    location.reload(); // Refresh page to update UI
+function insertMoviesIntoTable(eleTable, moviesArray, isPinnedTable = false) {
+    const tableBody = eleTable.querySelector('tbody');
+    tableBody.innerHTML = '';
+    
+    const pinnedMovies = getPinnedMoviesFromStorage();
+    const pinnedMovieTitles = new Set(pinnedMovies.map(movie => movie.title));
+    
+    const filteredMovies = isPinnedTable ? 
+        moviesArray : 
+        moviesArray.filter(movie => movie.genre !== 'Drama');
+    
+    filteredMovies.sort((a, b) => b.rating - a.rating);
+    
+    filteredMovies.forEach(movie => {
+        const row = document.createElement('tr');
+        
+        if (movie.rating > 8) {
+            row.classList.add('table-success'); // Good rating
+        } else if (movie.rating > 5) {
+            row.classList.add('table-primary'); // Okay rating
+        } else if (movie.rating > 2) {
+            row.classList.add('table-warning'); // Somewhat okay rating
+        } else {
+            row.classList.add('table-danger'); // Low rating
+        }
+        
+        
+        // Title
+        const titleCell = document.createElement('td');
+        titleCell.textContent = movie.title;
+        row.appendChild(titleCell);
+        
+        // Genre
+        const genreCell = document.createElement('td');
+        genreCell.textContent = movie.genre;
+        row.appendChild(genreCell);
+        
+        // Release Date 
+        const releaseDateCell = document.createElement('td');
+        const releaseDate = new Date(movie.release_date * 1000);
+        releaseDateCell.textContent = releaseDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        row.appendChild(releaseDateCell);
+        
+        // Director
+        const directorCell = document.createElement('td');
+        directorCell.textContent = movie.director;
+        row.appendChild(directorCell);
+        
+        // Rating
+        const ratingCell = document.createElement('td');
+        ratingCell.textContent = movie.rating;
+        row.appendChild(ratingCell);
+        
+        // Action button
+        const actionCell = document.createElement('td');
+        const actionButton = document.createElement('button');
+        
+        if (isPinnedTable) {
+            // Unpin button
+            actionButton.classList.add('btn', 'btn-danger', 'btn-sm');
+            actionButton.innerHTML = '<i class="fa-solid fa-xmark"></i>'; // X icon
+            
+            actionButton.addEventListener('click', () => {
+                // Remove pinnedMovies
+                const updatedPinnedMovies = pinnedMovies.filter(
+                    pinnedMovie => pinnedMovie.title !== movie.title
+                );
+                localStorage.setItem('pinnedMovies', JSON.stringify(updatedPinnedMovies));
+
+                window.location.reload();
+            });
+        } else {
+            // Pin button
+            const isPinned = pinnedMovieTitles.has(movie.title);
+            
+            if (isPinned) {
+                actionButton.classList.add('btn', 'btn-danger', 'btn-sm');
+                actionButton.innerHTML = '<i class="fa-solid fa-xmark"></i>'; // X icon
+            } else {
+                actionButton.classList.add('btn', 'btn-primary', 'btn-sm');
+                actionButton.innerHTML = '<i class="fa-solid fa-thumbtack"></i>'; // Pin icon
+            }
+            
+            actionButton.addEventListener('click', () => {
+                if (isPinned) {
+                    // Remove pinnedMovies
+                    const updatedPinnedMovies = pinnedMovies.filter(
+                        pinnedMovie => pinnedMovie.title !== movie.title
+                    );
+                    localStorage.setItem('pinnedMovies', JSON.stringify(updatedPinnedMovies));
+                } else {
+                    // Add pinnedMovies
+                    pinnedMovies.push(movie);
+                    localStorage.setItem('pinnedMovies', JSON.stringify(pinnedMovies));
+                }
+                
+                window.location.reload();
+            });
+        }
+        
+        actionCell.appendChild(actionButton);
+        row.appendChild(actionCell);
+        
+        tableBody.appendChild(row);
+    });
 }
