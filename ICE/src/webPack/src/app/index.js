@@ -1,3 +1,8 @@
+import listBuilder from "./animals/list.js";
+import animalBuilder from "./animals/index.js";
+import coverBuilder from "./views/cover.ejs"
+import twitter from '../asset/twitter.svg';
+
 function app(container) {
     var appObj = {
         recordPage: { page: 1, perPage: 10 },
@@ -51,7 +56,13 @@ function app(container) {
             navItems[0].classList.add('active');
             navItems[0].setAttribute('aria-current', 'page');
             container.innerHTML = '';
-            container.append(coverBuilder(app).element);
+
+            // Adding the three background images of "everything is object"
+            container.innerHTML = `
+                <img src='./img/everything_is_object1.png'>
+                <img src='./img/everything_is_object2.png'>
+                <img src='./img/everything_is_object3.png'>
+            `;
         }
     };
 
@@ -76,6 +87,9 @@ function app(container) {
     };
 
     const routes = [
+        { path: '/', view: () => appObj.coverBuilder(appObj) },
+        { path: '/animal', view: () => appObj.animalBuilder(appObj) },
+        { path: '/list', view: () => appObj.listBuilder(appObj) },
         { path: '/contact', view: () => appObj.contactBuilder(appObj) },
         { path: '/about', view: () => appObj.aboutBuilder(appObj) }
     ];
